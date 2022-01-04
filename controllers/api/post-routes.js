@@ -4,7 +4,6 @@ const { Post, User, Comment, Vote } = require('../../models');
 
 // get all users
 router.get('/', (req, res) => {
-  console.log('======================');
   Post.findAll({
     attributes: [
       'id',
@@ -29,7 +28,12 @@ router.get('/', (req, res) => {
       }
     ]
   })
-    .then(dbPostData => res.json(dbPostData))
+    .then(dbPostData => {
+      console.log(dbPostData[0]);
+      const posts = dbPostData.map(post => post.get({ plain: true }));
+      //pass a single post object into the homepage template
+      res.render('homepage', { posts });
+    })
     .catch(err => {
       console.log(err);
       res.status(500).json(err);
